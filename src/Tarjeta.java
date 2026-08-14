@@ -19,4 +19,36 @@ public class Tarjeta {
         System.out.println("Meses de vigencia: " + this.mesesVigencia);
     }
 
+    public String getNumeroTarjeta() {
+        return numeroTarjeta;
+    }
+
+    public void setNumeroTarjeta(String numeroTarjeta) {
+        this.numeroTarjeta = numeroTarjeta;
+    }
+
+    public String getTipoTarjeta() {
+        return tipoTarjeta;
+    }
+
+    public void setTipoTarjeta(String tipoTarjeta) {
+        this.tipoTarjeta = tipoTarjeta;
+    }
+
+    public double getCupo() {
+        return cupo;
+    }
+
+    public void setCupo(double cupo) {
+        this.cupo = cupo;
+    }
+
+    public int getMesesVigencia() {
+        return mesesVigencia;
+    }
+
+    public void setMesesVigencia(int mesesVigencia) {
+        this.mesesVigencia = mesesVigencia;
+    }
+
 }
