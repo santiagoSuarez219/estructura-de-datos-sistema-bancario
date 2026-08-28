@@ -24,11 +24,24 @@ public class TarjetaCredito extends Tarjeta {
         this.deuda = deuda;
     }
 
+    @Override
+    public void pagar(double monto) {
+        super.pagar(monto);
+        if (monto > mostrarCupo()) {
+            throw new IllegalArgumentException("El monto supera el cupo disponible");
+        }
+        this.deuda += monto;
+        System.out.println("Pago exitoso");
+    }
+
+    @Override
     public String abonar(double monto) {
+        super.pagar(monto);
+        this.deuda = this.deuda - monto;
         return "Saldo abonado exitosamente";
     }
 
     public double mostrarCupo() {
-        return 0.0;
+        return this.cupo - this.deuda;
     }
 }

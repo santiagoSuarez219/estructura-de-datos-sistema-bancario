@@ -21,7 +21,24 @@ public class TarjetaDebito extends Tarjeta {
         System.out.println("Consignacion exitosa");
     }
 
+    @Override
+    public void pagar(double monto) {
+        super.pagar(monto);
+        if (monto > this.saldo) {
+            throw new IllegalArgumentException("Saldo insuficiente para realizar el pago");
+        }
+        this.saldo -= monto;
+        System.out.println("Pago exitoso");
+    }
+
+    @Override
+    public String abonar(double monto) {
+        super.pagar(monto);
+        consignar(monto);
+        return "Saldo abonado exitosamente";
+    }
+
     public double mostrarSaldo() {
-        return 0.0;
+        return this.saldo;
     }
 }
