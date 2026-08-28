@@ -1,17 +1,16 @@
 package com.itm.sistemabancario.models;
 
-public class Tarjeta {
-    private double numertoTarjeta;
-    private int cvc;
-    private String fechaCaducidad;
+public abstract class Tarjeta {
+    protected double numertoTarjeta;
+    protected int cvc;
+    protected String fechaCaducidad;
     protected String franquicia;
-    private String titular;
+    protected String titular;
 
     public Tarjeta(double numertoTarjeta, String franquicia, String titular) {
         this.numertoTarjeta = numertoTarjeta;
         this.franquicia = franquicia;
         this.titular = titular;
-        System.out.println("Constructor del padre");
     }
 
     public double getNumertoTarjeta() {
@@ -54,7 +53,12 @@ public class Tarjeta {
         this.titular = titular;
     }
 
-    public String pagar(double monto) {
-        return "Pago exitoso";
+    public abstract String abonar(double monto);
+
+    public void pagar(double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser mayor a cero");
+        }
+        System.out.println("Procesando ...");
     }
 }
