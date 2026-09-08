@@ -1,6 +1,6 @@
 package com.itm.sistemabancario.models;
 
-public abstract class Tarjeta {
+public abstract class Tarjeta implements Auditable, Procesable {
     protected double numertoTarjeta;
     protected int cvc;
     protected String fechaCaducidad;
