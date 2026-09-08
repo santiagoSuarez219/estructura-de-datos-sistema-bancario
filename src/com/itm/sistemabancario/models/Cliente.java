@@ -1,55 +1,50 @@
 package com.itm.sistemabancario.models;
 
 public class Cliente {
+    private String identificacion;
+    private String nombre;
+    private String telefono;
+    private String direccion;
+    private Cuenta[] cuentas;
+    private AsesorFinanciero asesor;
 
-    private String nombre; // Obligatorio
-    private String cedula; // Obligatorio
-    private String telefono; // Opcional
-    private int edad; // Opcional
-    private int saldo; // Automatizar
-
-    public Cliente(String nombre, String cedula, String telefono, int edad, int saldo) {
-        this(nombre, cedula);
+    public Cliente(String identificacion, String nombre, String telefono, String direccion) {
+        this.identificacion = identificacion;
+        this.nombre = nombre;
         this.telefono = telefono;
-        this.edad = edad;
+        this.direccion = direccion;
+        this.cuentas = new Cuenta[0];
     }
 
-    public Cliente(String nombre, String cedula) {
-        this.nombre = nombre;
-        this.cedula = cedula;
-        this.saldo = 0;
-    }
-
-    public Cliente(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void mostrarInfo() {
-        System.out.println("Nombre: " + this.nombre);
-        System.out.println("Cedula: " + this.cedula);
-        System.out.println("Telefono: " + this.telefono);
-        System.out.println("Edad: " + this.edad);
-    }
-
-    public int getSaldo() {
-        return this.saldo;
-    }
-
-    public void setSaldo(int saldo) {
-        if (saldo < 0) {
-            System.out.println("El saldo no puede ser negativo");
-        } else {
-            this.saldo = saldo;
-            System.out.println("El saldo ha sido actualizado correctamente");
+    public void agregarCuenta(Cuenta cuenta) {
+        Cuenta[] nuevasCuentas = new Cuenta[this.cuentas.length + 1];
+        for (int i = 0; i < this.cuentas.length; i++) {
+            nuevasCuentas[i] = this.cuentas[i];
         }
+        nuevasCuentas[this.cuentas.length] = cuenta;
+        this.cuentas = nuevasCuentas;
     }
 
-    // get: nombre
+    public void trasladarA(Sucursal sucursal) {
+        sucursal.agregarCliente(this);
+    }
+
+    public void asignarAsesor(AsesorFinanciero asesor) {
+        this.asesor = asesor;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
+    }
+
     public String getNombre() {
-        return this.nombre;
+        return nombre;
     }
 
-    // set : nombre
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -62,16 +57,19 @@ public class Cliente {
         this.telefono = telefono;
     }
 
-    public int getEdad() {
-        return edad;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
-    public String getCedula() {
-        return cedula;
+    public Cuenta[] getCuentas() {
+        return cuentas;
     }
 
+    public AsesorFinanciero getAsesor() {
+        return asesor;
+    }
 }
