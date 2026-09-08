@@ -1,24 +1,57 @@
 package com.itm.sistemabancario.models;
 
-public class Cuenta {
+import java.time.LocalDate;
 
+public abstract class Cuenta implements OperacionesCuenta {
     private String numeroCuenta;
-    private String tipoCuenta;
     private double saldo;
-    private String titular;
+    private LocalDate fechaApertura;
+    private Movimiento[] movimientos;
 
-    public Cuenta(String numeroCuenta, String tipoCuenta, double saldo, String titular) {
+    public Cuenta(String numeroCuenta, double saldo, LocalDate fechaApertura) {
         this.numeroCuenta = numeroCuenta;
-        this.tipoCuenta = tipoCuenta;
         this.saldo = saldo;
-        this.titular = titular;
+        this.fechaApertura = fechaApertura;
+        this.movimientos = new Movimiento[0];
     }
 
-    public void mostrarInfo() {
-        System.out.println("Numero de cuenta: " + this.numeroCuenta);
-        System.out.println("Tipo de cuenta: " + this.tipoCuenta);
-        System.out.println("Saldo: " + this.saldo);
-        System.out.println("Titular: " + this.titular);
+    public Cuenta(String numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
+        this.saldo = 0;
+        this.fechaApertura = LocalDate.now();
+        this.movimientos = new Movimiento[0];
+    }
+
+    @Override
+    public void depositar(double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser mayor a cero");
+        }
+        this.saldo += monto;
+        registrarMovimiento("Deposito", monto);
+    }
+
+    @Override
+    public double consultarSaldo() {
+        return this.saldo;
+    }
+
+    protected void debitar(double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser mayor a cero");
+        }
+        this.saldo -= monto;
+        registrarMovimiento("Retiro", monto);
+    }
+
+    protected void registrarMovimiento(String tipo, double monto) {
+        Movimiento movimiento = new Movimiento(tipo, monto, LocalDate.now());
+        Movimiento[] nuevosMovimientos = new Movimiento[this.movimientos.length + 1];
+        for (int i = 0; i < this.movimientos.length; i++) {
+            nuevosMovimientos[i] = this.movimientos[i];
+        }
+        nuevosMovimientos[this.movimientos.length] = movimiento;
+        this.movimientos = nuevosMovimientos;
     }
 
     public String getNumeroCuenta() {
@@ -29,28 +62,19 @@ public class Cuenta {
         this.numeroCuenta = numeroCuenta;
     }
 
-    public String getTipoCuenta() {
-        return tipoCuenta;
-    }
-
-    public void setTipoCuenta(String tipoCuenta) {
-        this.tipoCuenta = tipoCuenta;
-    }
-
     public double getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(double saldo) {
+    protected void setSaldo(double saldo) {
         this.saldo = saldo;
     }
 
-    public String getTitular() {
-        return titular;
+    public LocalDate getFechaApertura() {
+        return fechaApertura;
     }
 
-    public void setTitular(String titular) {
-        this.titular = titular;
+    public Movimiento[] getMovimientos() {
+        return movimientos;
     }
-
 }
