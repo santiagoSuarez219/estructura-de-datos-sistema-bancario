@@ -41,4 +41,16 @@ public class TarjetaDebito extends Tarjeta {
     public double mostrarSaldo() {
         return this.saldo;
     }
+
+    @Override
+    public String generarRegistroAuditoria() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'generarRegistroAuditoria'");
+    }
+
+    @Override
+    public void procesarActivo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'procesarActivo'");
+    }
 }

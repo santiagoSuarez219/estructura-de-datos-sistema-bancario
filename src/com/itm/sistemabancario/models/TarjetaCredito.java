@@ -44,4 +44,16 @@ public class TarjetaCredito extends Tarjeta {
     public double mostrarCupo() {
         return this.cupo - this.deuda;
     }
+
+    @Override
+    public String generarRegistroAuditoria() {
+        System.out.println("Audiante tarjeta " + this.numertoTarjeta + "de la franquicia " + this.franquicia);
+        return "Auditoria exitosa";
+    }
+
+    @Override
+    public void procesarActivo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'procesarActivo'");
+    }
 }
