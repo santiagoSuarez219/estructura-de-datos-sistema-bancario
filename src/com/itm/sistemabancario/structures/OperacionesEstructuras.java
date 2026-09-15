@@ -1,7 +1,7 @@
 package com.itm.sistemabancario.structures;
 
 public interface OperacionesEstructuras<T> {
-    void crear(T dato);
+    void crear(int indice, T dato);
 
     void buscarPorIndice(int index);
 
