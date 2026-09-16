@@ -98,13 +98,68 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
 
     @Override
     public void actualizar(int indice, T dato) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizar'");
+        if (indice < 0 || indice >= tamano) {
+            throw new IndexOutOfBoundsException("Indice fuera de rango: " + indice);
+        }
+        Nodo<T> datoActual = this.head;
+        for (int i = 0; i < indice; i++) {
+            datoActual = datoActual.getSiguiente();
+        }
+        datoActual.setDato(dato);
+    }
+
+    public boolean eliminarAlInicio() {
+        if (this.estaVacia()) {
+            System.out.println("No hay elementos para eliminar");
+            return false;
+        }
+        this.head = this.head.getSiguiente();
+        this.tamano--;
+        return true;
+    }
+
+    public boolean eliminarAlFinal() {
+        if (this.estaVacia()) {
+            System.out.println("No hay elementos para eliminar");
+            return false;
+        }
+        if (this.head.getSiguiente() == null) {
+            this.head = null;
+            tamano--;
+            return true;
+        }
+
+        Nodo<T> datoActual = this.head;
+        while (datoActual.getSiguiente().getSiguiente() != null) {
+            datoActual = datoActual.getSiguiente();
+        }
+        datoActual.setSiguiente(null);
+        this.tamano--;
+        return true;
+    }
+
+    public boolean eliminarPorValor(T dato) {
+        if (this.estaVacia()) {
+            System.out.println("No hay elementos para eliminar");
+            return false;
+        }
+        Nodo<T> datoAnterior = this.head;
+        Nodo<T> datoSiguiente = datoAnterior.getSiguiente();
+        while (datoSiguiente != null) {
+            if (datoSiguiente.getDato().equals(dato)) {
+                datoAnterior.setSiguiente(datoSiguiente.getSiguiente());
+                tamano--;
+                return true;
+            }
+            datoAnterior = datoSiguiente;
+            datoSiguiente = datoSiguiente.getSiguiente();
+        }
+        return false;
     }
 
     @Override
     public boolean eliminar(T dato) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminar'");
+        boolean seElimino = eliminarPorValor(dato);
+        return seElimino;
     }
 }
