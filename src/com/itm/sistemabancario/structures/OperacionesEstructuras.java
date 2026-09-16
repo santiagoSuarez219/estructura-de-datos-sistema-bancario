@@ -3,12 +3,12 @@ package com.itm.sistemabancario.structures;
 public interface OperacionesEstructuras<T> {
     void crear(int indice, T dato);
 
-    void buscarPorIndice(int index);
+    T buscarPorIndice(int indice);
 
-    void buscarPorValor(T dato);
+    T buscarPorValor(T dato);
 
-    void actualizar(int index, T dato);
+    void actualizar(int indice, T dato);
 
-    void eliminar(int index);
+    boolean eliminar(T dato);
 
 }
