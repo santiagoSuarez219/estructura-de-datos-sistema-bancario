@@ -1,5 +1,7 @@
 package com.itm.sistemabancario.structures;
 
+import java.util.NoSuchElementException;
+
 public class ListaSimple<T> implements OperacionesEstructuras<T> {
     private Nodo<T> head;
     private int tamano;
@@ -68,27 +70,92 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
     }
 
     @Override
-    public void buscarPorIndice(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscarPorIndice'");
+    public T buscarPorIndice(int indice) {
+        if (indice < 0 || indice >= tamano) {
+            throw new IndexOutOfBoundsException("Indice fuera de rango: " + indice);
+        }
+        Nodo<T> actual = head;
+        for (int i = 0; i < indice; i++) {
+            actual = actual.getSiguiente();
+        }
+        return actual.getDato();
     }
 
     @Override
-    public void buscarPorValor(T dato) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscarPorValor'");
+    public T buscarPorValor(T dato) {
+        Nodo<T> actual = head;
+        while (actual != null) {
+            if (actual.getDato().equals(dato)) {
+                return actual.getDato();
+            }
+            actual = actual.getSiguiente();
+        }
+        System.out.println("Dato no encontrado");
+        return null;
     }
 
     @Override
-    public void actualizar(int index, T dato) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizar'");
+    public void actualizar(int indice, T dato) {
+        if (indice < 0 || indice >= tamano) {
+            throw new IndexOutOfBoundsException("Indice fuera de rango: " + indice);
+        }
+        Nodo<T> actual = head;
+        for (int i = 0; i < indice; i++) {
+            actual = actual.getSiguiente();
+        }
+        actual.setDato(dato);
+    }
+
+    public void eliminarInicio() {
+        if (estaVacia()) {
+            throw new NoSuchElementException("No hay elementos para eliminar");
+        }
+        head = head.getSiguiente();
+        tamano--;
+    }
+
+    public void eliminarFinal() {
+        if (estaVacia()) {
+            throw new NoSuchElementException("No hay elementos para eliminar");
+        }
+        if (head.getSiguiente() == null) {
+            head = null;
+            tamano--;
+            return;
+        }
+        Nodo<T> actual = head;
+        while (actual.getSiguiente().getSiguiente() != null) {
+            actual = actual.getSiguiente();
+        }
+        actual.setSiguiente(null);
+        tamano--;
+    }
+
+    public boolean eliminarPorValor(T dato) {
+        if (estaVacia()) {
+            return false;
+        }
+        if (head.getDato().equals(dato)) {
+            eliminarInicio();
+            return true;
+        }
+        Nodo<T> anterior = head;
+        Nodo<T> actual = head.getSiguiente();
+        while (actual != null) {
+            if (actual.getDato().equals(dato)) {
+                anterior.setSiguiente(actual.getSiguiente());
+                tamano--;
+                return true;
+            }
+            anterior = actual;
+            actual = actual.getSiguiente();
+        }
+        return false;
     }
 
     @Override
-    public void eliminar(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminar'");
+    public boolean eliminar(T dato) {
+        return eliminarPorValor(dato);
     }
 
     public Nodo<T> getHead() {
