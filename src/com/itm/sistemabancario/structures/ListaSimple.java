@@ -1,5 +1,7 @@
 package com.itm.sistemabancario.structures;
 
+import java.util.NoSuchElementException;
+
 public class ListaSimple<T> implements OperacionesEstructuras<T> {
     private Nodo<T> head;
     private int tamano;
@@ -90,6 +92,31 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
         }
         System.out.println("Dato no encontrado");
         return null;
+    }
+
+    public void eliminarInicio() {
+        if (estaVacia()) {
+            throw new NoSuchElementException("No hay elementos para eliminar");
+        }
+        head = head.getSiguiente();
+        tamano--;
+    }
+
+    public void eliminarFinal() {
+        if (estaVacia()) {
+            throw new NoSuchElementException("No hay elementos para eliminar");
+        }
+        if (head.getSiguiente() == null) {
+            head = null;
+            tamano--;
+            return;
+        }
+        Nodo<T> actual = head;
+        while (actual.getSiguiente().getSiguiente() != null) {
+            actual = actual.getSiguiente();
+        }
+        actual.setSiguiente(null);
+        tamano--;
     }
 
     public Nodo<T> getHead() {
