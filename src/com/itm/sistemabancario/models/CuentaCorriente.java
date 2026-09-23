@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class CuentaCorriente extends Cuenta {
     private double cupoSobregiro;
 
-    public CuentaCorriente(String numeroCuenta, double saldo, LocalDate fechaApertura, double cupoSobregiro) {
-        super(numeroCuenta, saldo, fechaApertura);
+    public CuentaCorriente(Cliente cliente, double cupoSobregiro) {
+        super(cliente);
         this.cupoSobregiro = cupoSobregiro;
     }
 
