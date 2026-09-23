@@ -1,11 +1,13 @@
 package com.itm.sistemabancario.models;
 
+import com.itm.sistemabancario.structures.ListaSimple;
+
 public class Cliente {
     private String identificacion;
     private String nombre;
     private String telefono;
     private String direccion;
-    private Cuenta[] cuentas;
+    private ListaSimple<Cuenta> cuentas;
     private AsesorFinanciero asesor;
 
     public Cliente(String identificacion, String nombre, String telefono, String direccion) {
@@ -13,16 +15,7 @@ public class Cliente {
         this.nombre = nombre;
         this.telefono = telefono;
         this.direccion = direccion;
-        this.cuentas = new Cuenta[0];
-    }
-
-    public void agregarCuenta(Cuenta cuenta) {
-        Cuenta[] nuevasCuentas = new Cuenta[this.cuentas.length + 1];
-        for (int i = 0; i < this.cuentas.length; i++) {
-            nuevasCuentas[i] = this.cuentas[i];
-        }
-        nuevasCuentas[this.cuentas.length] = cuenta;
-        this.cuentas = nuevasCuentas;
+        this.cuentas = new ListaSimple<Cuenta>();
     }
 
     public void trasladarA(Sucursal sucursal) {
@@ -61,12 +54,12 @@ public class Cliente {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public ListaSimple<Cuenta> getCuentas() {
+        return cuentas;
     }
 
-    public Cuenta[] getCuentas() {
-        return cuentas;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public AsesorFinanciero getAsesor() {
