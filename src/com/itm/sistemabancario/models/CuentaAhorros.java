@@ -1,18 +1,11 @@
 package com.itm.sistemabancario.models;
 
-import java.time.LocalDate;
-
 public class CuentaAhorros extends Cuenta {
     private double tasaInteres;
 
-    public CuentaAhorros(String numeroCuenta, double saldo, LocalDate fechaApertura, double tasaInteres) {
-        super(numeroCuenta, saldo, fechaApertura);
-        this.tasaInteres = tasaInteres;
-    }
-
-    public CuentaAhorros(String numeroCuenta, double tasaInteres) {
-        super(numeroCuenta);
-        this.tasaInteres = tasaInteres;
+    public CuentaAhorros(Cliente cliente) {
+        super(cliente);
+        this.tasaInteres = Math.random();
     }
 
     @Override
