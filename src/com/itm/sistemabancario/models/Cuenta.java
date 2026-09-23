@@ -2,24 +2,36 @@ package com.itm.sistemabancario.models;
 
 import java.time.LocalDate;
 
+import com.itm.sistemabancario.structures.Pila;
+
 public abstract class Cuenta implements OperacionesCuenta {
-    private String numeroCuenta;
+    private int numeroCuenta;
     private double saldo;
     private LocalDate fechaApertura;
-    private Movimiento[] movimientos;
+    private Pila<Movimiento> movimientos;
+    private Cliente cliente;
 
-    public Cuenta(String numeroCuenta, double saldo, LocalDate fechaApertura) {
+    public Cuenta(int numeroCuenta, double saldo, LocalDate fechaApertura, Cliente cliente) {
         this.numeroCuenta = numeroCuenta;
         this.saldo = saldo;
         this.fechaApertura = fechaApertura;
-        this.movimientos = new Movimiento[0];
+        this.movimientos = new Pila<Movimiento>();
+        this.cliente = cliente;
     }
 
-    public Cuenta(String numeroCuenta) {
-        this.numeroCuenta = numeroCuenta;
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Cuenta(Cliente cliente) {
+        this.numeroCuenta = (int) (Math.random() * 900) + 100;
         this.saldo = 0;
         this.fechaApertura = LocalDate.now();
-        this.movimientos = new Movimiento[0];
+        this.cliente = cliente;
     }
 
     @Override
@@ -46,20 +58,19 @@ public abstract class Cuenta implements OperacionesCuenta {
 
     protected void registrarMovimiento(String tipo, double monto) {
         Movimiento movimiento = new Movimiento(tipo, monto, LocalDate.now());
-        Movimiento[] nuevosMovimientos = new Movimiento[this.movimientos.length + 1];
-        for (int i = 0; i < this.movimientos.length; i++) {
-            nuevosMovimientos[i] = this.movimientos[i];
-        }
-        nuevosMovimientos[this.movimientos.length] = movimiento;
-        this.movimientos = nuevosMovimientos;
+        this.movimientos.push(movimiento);
     }
 
-    public String getNumeroCuenta() {
+    public int getNumeroCuenta() {
         return numeroCuenta;
     }
 
-    public void setNumeroCuenta(String numeroCuenta) {
+    public void setNumeroCuenta(int numeroCuenta) {
         this.numeroCuenta = numeroCuenta;
+    }
+
+    public Pila<Movimiento> getMovimientos() {
+        return movimientos;
     }
 
     public double getSaldo() {
@@ -72,9 +83,5 @@ public abstract class Cuenta implements OperacionesCuenta {
 
     public LocalDate getFechaApertura() {
         return fechaApertura;
-    }
-
-    public Movimiento[] getMovimientos() {
-        return movimientos;
     }
 }
