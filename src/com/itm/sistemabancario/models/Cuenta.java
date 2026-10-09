@@ -57,7 +57,7 @@ public abstract class Cuenta implements OperacionesCuenta {
     }
 
     protected void registrarMovimiento(String tipo, double monto) {
-        Movimiento movimiento = new Movimiento(tipo, monto, LocalDate.now());
+        Movimiento movimiento = new Movimiento(tipo, monto);
         this.movimientos.push(movimiento);
     }
 

@@ -7,10 +7,10 @@ public class Movimiento {
     private double monto;
     private LocalDate fecha;
 
-    public Movimiento(String tipo, double monto, LocalDate fecha) {
+    public Movimiento(String tipo, double monto) {
         this.tipo = tipo;
         this.monto = monto;
-        this.fecha = fecha;
+        this.fecha = LocalDate.now();
     }
 
     public String getTipo() {

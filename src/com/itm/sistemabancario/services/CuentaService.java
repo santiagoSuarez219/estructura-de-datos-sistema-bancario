@@ -47,7 +47,16 @@ public class CuentaService {
         }
     }
 
-    public void registrarOperacion(Movimiento movimiento, Cuenta cuenta) {
+    public void registrarOperacion(String tipo, double monto, Cliente cliente, int numeroCuenta) {
+        Cuenta cuenta = buscarCuentaPorNumero(cliente, numeroCuenta);
+        if (tipo == "Deposito") {
+            cuenta.depositar(numeroCuenta);
+        } else if (tipo == "Retiro") {
+            cuenta.retirar(numeroCuenta);
+        } else {
+            throw new IllegalArgumentException("Tipo de movimiento invalido");
+        }
+        Movimiento movimiento = new Movimiento(tipo, monto);
         cuenta.getMovimientos().push(movimiento);
     }
 
