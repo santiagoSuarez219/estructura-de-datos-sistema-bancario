@@ -60,8 +60,14 @@ public class CuentaService {
         cuenta.getMovimientos().push(movimiento);
     }
 
-    public Movimiento deshacerUltimaOperacion(Cuenta cuenta) {
+    public Movimiento deshacerUltimaOperacion(Cliente cliente, int numeroCuenta) {
+        Cuenta cuenta = buscarCuentaPorNumero(cliente, numeroCuenta);
         Movimiento ultimoMovimiento = cuenta.getMovimientos().pop();
+        if (ultimoMovimiento.getTipo() == "Deposito") {
+            cuenta.retirar(ultimoMovimiento.getMonto());
+        } else if (ultimoMovimiento.getTipo() == "Retiro") {
+            cuenta.depositar(ultimoMovimiento.getMonto());
+        }
         return ultimoMovimiento;
     }
 
