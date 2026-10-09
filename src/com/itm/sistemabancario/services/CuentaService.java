@@ -39,11 +39,34 @@ public class CuentaService {
             return;
         }
         Nodo<Movimiento> actual = movimientos.getTope();
-        for (int i = 0; i < movimientos.getTamanio(); i++) {
+        for (int i = 0; i < movimientos.size(); i++) {
             Movimiento movimientoActual = actual.getDato();
             System.out.println("Tipo: " + movimientoActual.getTipo() + " Monto: " +
                     movimientoActual.getMonto() + " Fecha: " + movimientoActual.getFecha());
             actual = actual.getSiguiente();
         }
     }
+
+    public void registrarOperacion(Movimiento movimiento, Cuenta cuenta) {
+        cuenta.getMovimientos().push(movimiento);
+    }
+
+    public Movimiento deshacerUltimaOperacion(Cuenta cuenta) {
+        Movimiento ultimoMovimiento = cuenta.getMovimientos().pop();
+        return ultimoMovimiento;
+    }
+
+    public Movimiento consultarUltimaOperacion(Cuenta cuenta) {
+        Movimiento ultimoMovimiento = cuenta.getMovimientos().peek();
+        return ultimoMovimiento;
+    }
+
+    public boolean sinOperacionesPorDeshacer(Cuenta cuenta) {
+        return cuenta.getMovimientos().isEmpty();
+    }
+
+    public int contarOperaciones(Cuenta cuenta) {
+        return cuenta.getMovimientos().size();
+    }
+
 }
