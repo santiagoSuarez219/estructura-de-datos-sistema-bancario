@@ -1,7 +1,5 @@
 package com.itm.sistemabancario.models;
 
-import java.time.LocalDate;
-
 public class CuentaCorriente extends Cuenta {
     private double cupoSobregiro;
 
