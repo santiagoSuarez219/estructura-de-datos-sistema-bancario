@@ -37,7 +37,7 @@ public class Pila<T> {
         return this.tope.getDato();
     }
 
-    public int getTamanio() {
+    public int size() {
         return tamanio;
     }
 
