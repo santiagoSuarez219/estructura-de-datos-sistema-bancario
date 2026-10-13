@@ -21,69 +21,56 @@ public class ClienteService {
             }
             clienteActual = clienteActual.getSiguiente();
         }
-        System.out.println("Dato no encontrado");
         return null;
     }
 
     public Cliente buscarPorIndice(int indice) {
-        Cliente clienteEncontrado = clientes.buscarPorIndice(indice);
-        if (clienteEncontrado != null) {
-            return clienteEncontrado;
+        if (indice < 0 || indice >= clientes.getTamano()) {
+            return null;
         }
-        return null;
+        return clientes.buscarPorIndice(indice);
     }
 
-    public void recorrerLista() {
+    public String listarClientes() {
+        StringBuilder texto = new StringBuilder();
         Nodo<Cliente> actual = clientes.getHead();
         for (int i = 0; i < clientes.getTamano(); i++) {
-            Cliente clienteActual = actual.getDato();
-            System.out.println("Indice: " + i + " Cliente: " +
-                    clienteActual.getNombre());
+            texto.append("Indice: ").append(i).append(" Cliente: ")
+                    .append(actual.getDato().getNombre()).append("\n");
             actual = actual.getSiguiente();
         }
+        return texto.toString();
     }
 
-    public void actualizarNombreCliente(Cliente cliente, String nuevoNombre) {
-        if (cliente != null) {
-            cliente.setNombre(nuevoNombre);
-            System.out.println("Nombre del cliente actualizado exitosamente.");
-        } else {
-            System.out.println("Cliente no encontrado.");
+    public boolean actualizarNombreCliente(Cliente cliente, String nuevoNombre) {
+        if (cliente == null) {
+            return false;
         }
+        cliente.setNombre(nuevoNombre);
+        return true;
     }
 
-    public void actualizarTelefonoCliente(Cliente cliente, String nuevoTelefono) {
-        if (cliente != null) {
-            cliente.setTelefono(nuevoTelefono);
-            System.out.println("Teléfono del cliente actualizado exitosamente.");
-        } else {
-            System.out.println("Cliente no encontrado.");
+    public boolean actualizarTelefonoCliente(Cliente cliente, String nuevoTelefono) {
+        if (cliente == null) {
+            return false;
         }
+        cliente.setTelefono(nuevoTelefono);
+        return true;
     }
 
-    public void actualizarDireccionCliente(Cliente cliente, String nuevaDireccion) {
-        if (cliente != null) {
-            cliente.setDireccion(nuevaDireccion);
-            System.out.println("Dirección del cliente actualizada exitosamente.");
-        } else {
-            System.out.println("Cliente no encontrado.");
+    public boolean actualizarDireccionCliente(Cliente cliente, String nuevaDireccion) {
+        if (cliente == null) {
+            return false;
         }
+        cliente.setDireccion(nuevaDireccion);
+        return true;
     }
 
     public boolean eliminarCliente(Cliente cliente) {
-        if (cliente != null) {
-            boolean eliminado = clientes.eliminar(cliente);
-            if (eliminado) {
-                System.out.println("Cliente eliminado exitosamente.");
-                return true;
-            } else {
-                System.out.println("Error al eliminar el cliente.");
-                return false;
-            }
-        } else {
-            System.out.println("Cliente no encontrado.");
+        if (cliente == null) {
             return false;
         }
+        return clientes.eliminar(cliente);
     }
 
 }
