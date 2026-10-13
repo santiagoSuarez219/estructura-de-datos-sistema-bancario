@@ -10,6 +10,9 @@ public class Pila<T> {
     }
 
     public void push(T valor) {
+        if (valor == null) {
+            throw new IllegalArgumentException("No se puede apilar un valor nulo");
+        }
         Nodo<T> nuevo = new Nodo<>(valor);
         nuevo.setSiguiente(this.tope);
         this.tope = nuevo;
@@ -39,9 +42,5 @@ public class Pila<T> {
 
     public int size() {
         return tamanio;
-    }
-
-    public Nodo<T> getTope() {
-        return tope;
     }
 }
