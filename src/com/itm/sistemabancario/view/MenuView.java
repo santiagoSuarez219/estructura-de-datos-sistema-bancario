@@ -10,6 +10,7 @@ public class MenuView {
 
     private MenuClienteView menuCliente = new MenuClienteView(clienteService);
     private MenuCuentaView menuCuenta = new MenuCuentaView(clienteService, cuentaService);
+    private MenuTaquillaView menuTaquilla = new MenuTaquillaView(clienteService);
 
     public void iniciar() {
         int opcion;
@@ -19,6 +20,7 @@ public class MenuView {
             switch (opcion) {
                 case 1 -> menuCliente.iniciar();
                 case 2 -> menuCuenta.iniciar();
+                case 3 -> menuTaquilla.iniciar();
                 case 0 -> System.out.println("Saliendo del sistema...");
                 default -> System.out.println("Opcion invalida.");
             }
@@ -30,6 +32,7 @@ public class MenuView {
     private void mostrarMenu() {
         System.out.println("1. Gestionar clientes");
         System.out.println("2. Gestionar cuentas");
+        System.out.println("3. Gestionar taquilla (fila de clientes)");
         System.out.println("0. Salir");
     }
 }
