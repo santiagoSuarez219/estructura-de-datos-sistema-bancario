@@ -11,14 +11,6 @@ public abstract class Cuenta implements OperacionesCuenta {
     private Pila<Movimiento> movimientos;
     private Cliente cliente;
 
-    public Cuenta(int numeroCuenta, double saldo, LocalDate fechaApertura, Cliente cliente) {
-        this.numeroCuenta = numeroCuenta;
-        this.saldo = saldo;
-        this.fechaApertura = fechaApertura;
-        this.movimientos = new Pila<Movimiento>();
-        this.cliente = cliente;
-    }
-
     public Cliente getCliente() {
         return cliente;
     }
@@ -31,6 +23,7 @@ public abstract class Cuenta implements OperacionesCuenta {
         this.numeroCuenta = (int) (Math.random() * 900) + 100;
         this.saldo = 0;
         this.fechaApertura = LocalDate.now();
+        this.movimientos = new Pila<Movimiento>();
         this.cliente = cliente;
     }
 
@@ -40,7 +33,6 @@ public abstract class Cuenta implements OperacionesCuenta {
             throw new IllegalArgumentException("El monto debe ser mayor a cero");
         }
         this.saldo += monto;
-        registrarMovimiento("Deposito", monto);
     }
 
     @Override
@@ -53,12 +45,6 @@ public abstract class Cuenta implements OperacionesCuenta {
             throw new IllegalArgumentException("El monto debe ser mayor a cero");
         }
         this.saldo -= monto;
-        registrarMovimiento("Retiro", monto);
-    }
-
-    protected void registrarMovimiento(String tipo, double monto) {
-        Movimiento movimiento = new Movimiento(tipo, monto);
-        this.movimientos.push(movimiento);
     }
 
     public int getNumeroCuenta() {
