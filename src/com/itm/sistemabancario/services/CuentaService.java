@@ -84,9 +84,9 @@ public class CuentaService {
         return ultimoMovimiento;
     }
 
-    public Movimiento consultarUltimaOperacion(Cuenta cuenta) {
-        Movimiento ultimoMovimiento = cuenta.getMovimientos().peek();
-        return ultimoMovimiento;
+    public Movimiento consultarUltimaOperacion(Cliente cliente, int numeroCuenta) {
+        Cuenta cuenta = obtenerCuenta(cliente, numeroCuenta);
+        return cuenta.getMovimientos().peek();
     }
 
     public boolean sinOperacionesPorDeshacer(Cliente cliente, int numeroCuenta) {
