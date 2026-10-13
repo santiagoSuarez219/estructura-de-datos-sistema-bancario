@@ -29,30 +29,23 @@ public class CuentaService {
             }
             cuentaActual = cuentaActual.getSiguiente();
         }
-        System.out.println("Dato no encontrado");
         return null;
     }
 
-    public void listarMovimientosCuenta(Cuenta cuenta) {
-        Pila<Movimiento> movimientos = cuenta.getMovimientos();
-        if (movimientos.isEmpty()) {
-            return;
+    private Cuenta obtenerCuenta(Cliente cliente, int numeroCuenta) {
+        Cuenta cuenta = buscarCuentaPorNumero(cliente, numeroCuenta);
+        if (cuenta == null) {
+            throw new IllegalArgumentException("La cuenta " + numeroCuenta + " no existe para el cliente");
         }
-        Nodo<Movimiento> actual = movimientos.getTope();
-        for (int i = 0; i < movimientos.size(); i++) {
-            Movimiento movimientoActual = actual.getDato();
-            System.out.println("Tipo: " + movimientoActual.getTipo() + " Monto: " +
-                    movimientoActual.getMonto() + " Fecha: " + movimientoActual.getFecha());
-            actual = actual.getSiguiente();
-        }
+        return cuenta;
     }
 
     public void registrarOperacion(String tipo, double monto, Cliente cliente, int numeroCuenta) {
-        Cuenta cuenta = buscarCuentaPorNumero(cliente, numeroCuenta);
-        if (tipo == "Deposito") {
-            cuenta.depositar(numeroCuenta);
-        } else if (tipo == "Retiro") {
-            cuenta.retirar(numeroCuenta);
+        Cuenta cuenta = obtenerCuenta(cliente, numeroCuenta);
+        if ("Deposito".equalsIgnoreCase(tipo)) {
+            cuenta.depositar(monto);
+        } else if ("Retiro".equalsIgnoreCase(tipo)) {
+            cuenta.retirar(monto);
         } else {
             throw new IllegalArgumentException("Tipo de movimiento invalido");
         }
@@ -61,11 +54,11 @@ public class CuentaService {
     }
 
     public Movimiento deshacerUltimaOperacion(Cliente cliente, int numeroCuenta) {
-        Cuenta cuenta = buscarCuentaPorNumero(cliente, numeroCuenta);
+        Cuenta cuenta = obtenerCuenta(cliente, numeroCuenta);
         Movimiento ultimoMovimiento = cuenta.getMovimientos().pop();
-        if (ultimoMovimiento.getTipo() == "Deposito") {
+        if ("Deposito".equalsIgnoreCase(ultimoMovimiento.getTipo())) {
             cuenta.retirar(ultimoMovimiento.getMonto());
-        } else if (ultimoMovimiento.getTipo() == "Retiro") {
+        } else if ("Retiro".equalsIgnoreCase(ultimoMovimiento.getTipo())) {
             cuenta.depositar(ultimoMovimiento.getMonto());
         }
         return ultimoMovimiento;
@@ -76,12 +69,39 @@ public class CuentaService {
         return ultimoMovimiento;
     }
 
-    public boolean sinOperacionesPorDeshacer(Cuenta cuenta) {
+    public boolean sinOperacionesPorDeshacer(Cliente cliente, int numeroCuenta) {
+        Cuenta cuenta = obtenerCuenta(cliente, numeroCuenta);
         return cuenta.getMovimientos().isEmpty();
     }
 
-    public int contarOperaciones(Cuenta cuenta) {
+    public int contarOperaciones(Cliente cliente, int numeroCuenta) {
+        Cuenta cuenta = obtenerCuenta(cliente, numeroCuenta);
         return cuenta.getMovimientos().size();
+    }
+
+    public String listarMovimientos(Cliente cliente, int numeroCuenta) {
+        Cuenta cuenta = obtenerCuenta(cliente, numeroCuenta);
+        Pila<Movimiento> original = cuenta.getMovimientos();
+
+        if (original.isEmpty()) {
+            return "No hay operaciones por deshacer";
+        }
+        Pila<Movimiento> auxiliar = new Pila<>();
+        StringBuilder texto = new StringBuilder();
+        int numero = 1;
+
+        while (!original.isEmpty()) {
+            Movimiento movimientoActual = original.pop();
+            texto.append(numero++).append(". ").append(movimientoActual.getTipo()).append(",")
+                    .append(movimientoActual.getMonto()).append(",").append(movimientoActual.getFecha()).append("\n");
+            auxiliar.push(movimientoActual);
+        }
+
+        while (!auxiliar.isEmpty()) {
+            original.push(auxiliar.pop());
+        }
+
+        return texto.toString();
     }
 
 }
