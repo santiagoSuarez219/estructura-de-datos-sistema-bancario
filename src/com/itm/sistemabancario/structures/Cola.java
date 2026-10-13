@@ -3,73 +3,55 @@ package com.itm.sistemabancario.structures;
 import java.util.NoSuchElementException;
 
 public class Cola<T> {
-    private Nodo<T> front;
-    private Nodo<T> back;
-    private int size;
+    private Nodo<T> frente;
+    private Nodo<T> fin;
+    private int tamano;
 
     public Cola() {
-        this.front = null;
-        this.back = null;
-        this.size = 0;
+        this.frente = null;
+        this.fin = null;
+        this.tamano = 0;
     }
 
-    public Nodo<T> getFront() {
-        return front;
-    }
-
-    public void setFront(Nodo<T> front) {
-        this.front = front;
-    }
-
-    public Nodo<T> getBack() {
-        return back;
-    }
-
-    public void setBack(Nodo<T> back) {
-        this.back = back;
-    }
-
-    // enqueue
-    public void enqueue(T dato) {
-        Nodo<T> nuevoNodo = new Nodo<>(dato);
-        if (isEmpty()) {
-            this.front = nuevoNodo;
-        } else {
-            this.back.setSiguiente(nuevoNodo);
+    public void enqueue(T elemento) {
+        if (elemento == null) {
+            throw new IllegalArgumentException("No se puede encolar un elemento nulo");
         }
-        this.back = nuevoNodo;
-        this.size++;
+        Nodo<T> nuevo = new Nodo<>(elemento);
+        if (isEmpty()) {
+            this.frente = nuevo;
+        } else {
+            this.fin.setSiguiente(nuevo);
+        }
+        this.fin = nuevo;
+        this.tamano++;
     }
 
-    // dequeue
     public T dequeue() {
         if (isEmpty()) {
-            throw new NoSuchElementException("La cola esta vacia");
+            throw new NoSuchElementException("La cola está vacía");
         }
-        T dato = this.front.getDato();
-        this.front = this.front.getSiguiente();
-        if (this.size == 1) {
-            this.back = null;
+        T dato = this.frente.getDato();
+        this.frente = this.frente.getSiguiente();
+        if (this.frente == null) {
+            this.fin = null;
         }
-        this.size--;
+        this.tamano--;
         return dato;
     }
 
-    // front
     public T front() {
         if (isEmpty()) {
-            throw new NoSuchElementException("La cola esta vacia");
+            throw new NoSuchElementException("La cola está vacía");
         }
-        return this.front.getDato();
+        return this.frente.getDato();
     }
 
-    // size
-    public int size() {
-        return this.size;
-    }
-
-    // isEmpty
     public boolean isEmpty() {
-        return this.front == null;
+        return frente == null;
+    }
+
+    public int size() {
+        return tamano;
     }
 }
