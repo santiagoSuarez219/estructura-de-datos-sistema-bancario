@@ -90,7 +90,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
             }
             actual = actual.getSiguiente();
         }
-        System.out.println("Dato no encontrado");
         return null;
     }
 
@@ -137,7 +136,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
 
     public boolean eliminarAlInicio() {
         if (this.estaVacia()) {
-            System.out.println("No hay elementos para eliminar");
             return false;
         }
         this.head = this.head.getSiguiente();
@@ -147,7 +145,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
 
     public boolean eliminarAlFinal() {
         if (this.estaVacia()) {
-            System.out.println("No hay elementos para eliminar");
             return false;
         }
         if (this.head.getSiguiente() == null) {
@@ -167,8 +164,10 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
 
     public boolean eliminarPorValor(T dato) {
         if (this.estaVacia()) {
-            System.out.println("No hay elementos para eliminar");
             return false;
+        }
+        if (this.head.getDato().equals(dato)) {
+            return this.eliminarAlInicio();
         }
         Nodo<T> datoAnterior = this.head;
         Nodo<T> datoSiguiente = datoAnterior.getSiguiente();
