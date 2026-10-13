@@ -1,7 +1,6 @@
 package com.itm.sistemabancario.view;
 
 import com.itm.sistemabancario.models.Cliente;
-import com.itm.sistemabancario.models.Cuenta;
 import com.itm.sistemabancario.models.Movimiento;
 import com.itm.sistemabancario.services.ClienteService;
 import com.itm.sistemabancario.services.CuentaService;
@@ -75,8 +74,7 @@ public class MenuMovimientoView {
             System.out.println("No hay movimientos por deshacer");
             return;
         }
-        Cuenta cuenta = cuentaService.buscarCuentaPorNumero(clienteActual, numeroCuenta);
-        Movimiento ultimo = cuentaService.consultarUltimaOperacion(cuenta);
+        Movimiento ultimo = cuentaService.consultarUltimaOperacion(clienteActual, numeroCuenta);
         System.out.println("Ultimo movimiento: " + ultimo.getTipo() + " de " + ultimo.getMonto() + " ("
                 + ultimo.getFecha() + ")");
     }
