@@ -1,15 +1,35 @@
 package com.itm.sistemabancario.services;
 
+import java.io.IOException;
+
 import com.itm.sistemabancario.models.Cliente;
+import com.itm.sistemabancario.repository.ClienteRepository;
+import com.itm.sistemabancario.repository.CuentaRepository;
 import com.itm.sistemabancario.structures.ListaSimple;
 import com.itm.sistemabancario.structures.Nodo;
 
 public class ClienteService {
     private ListaSimple<Cliente> clientes = new ListaSimple<>();
+    private ClienteRepository repositorio = new ClienteRepository();
+    private CuentaRepository cuentaRepositorio = new CuentaRepository();
+
+    public ClienteService() {
+        try {
+            clientes = repositorio.cargarTodos();
+            cuentaRepositorio.cargarTodas(clientes); // las cuentas cuelgan de sus clientes
+        } catch (IOException e) {
+            System.out.println("No se pudieron cargar los datos del archivo: " + e.getMessage());
+        }
+    }
 
     public Cliente crearCliente(String identificacion, String nombre, String telefono, String direccion) {
         Cliente cliente = new Cliente(identificacion, nombre, telefono, direccion);
         clientes.insertarFinal(cliente);
+        try {
+            repositorio.guardar(cliente);
+        } catch (IOException e) {
+            System.out.println("No se pudo guardar el cliente en el archivo: " + e.getMessage());
+        }
         return cliente;
     }
 
@@ -47,6 +67,7 @@ public class ClienteService {
             return false;
         }
         cliente.setNombre(nuevoNombre);
+        persistir();
         return true;
     }
 
@@ -55,6 +76,7 @@ public class ClienteService {
             return false;
         }
         cliente.setTelefono(nuevoTelefono);
+        persistir();
         return true;
     }
 
@@ -63,6 +85,7 @@ public class ClienteService {
             return false;
         }
         cliente.setDireccion(nuevaDireccion);
+        persistir();
         return true;
     }
 
@@ -70,7 +93,28 @@ public class ClienteService {
         if (cliente == null) {
             return false;
         }
-        return clientes.eliminar(cliente);
+        boolean eliminado = clientes.eliminar(cliente);
+        if (eliminado) {
+            persistir();
+            persistirCuentas(); // sus cuentas desaparecen con el
+        }
+        return eliminado;
+    }
+
+    public void persistirCuentas() {
+        try {
+            cuentaRepositorio.guardarTodas(clientes);
+        } catch (IOException e) {
+            System.out.println("No se pudieron guardar las cuentas en el archivo: " + e.getMessage());
+        }
+    }
+
+    private void persistir() {
+        try {
+            repositorio.guardarTodos(clientes);
+        } catch (IOException e) {
+            System.out.println("No se pudieron guardar los clientes en el archivo: " + e.getMessage());
+        }
     }
 
 }
