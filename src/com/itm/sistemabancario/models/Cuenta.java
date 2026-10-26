@@ -20,9 +20,14 @@ public abstract class Cuenta implements OperacionesCuenta {
     }
 
     public Cuenta(Cliente cliente) {
-        this.numeroCuenta = (int) (Math.random() * 900) + 100;
-        this.saldo = 0;
-        this.fechaApertura = LocalDate.now();
+        this(cliente, (int) (Math.random() * 900) + 100, 0, LocalDate.now());
+    }
+
+    // Para reconstruir una cuenta que ya existia (carga desde archivo)
+    public Cuenta(Cliente cliente, int numeroCuenta, double saldo, LocalDate fechaApertura) {
+        this.numeroCuenta = numeroCuenta;
+        this.saldo = saldo;
+        this.fechaApertura = fechaApertura;
         this.movimientos = new Pila<Movimiento>();
         this.cliente = cliente;
     }

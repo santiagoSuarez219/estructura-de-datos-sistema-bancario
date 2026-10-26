@@ -1,10 +1,18 @@
 package com.itm.sistemabancario.models;
 
+import java.time.LocalDate;
+
 public class CuentaCorriente extends Cuenta {
     private double cupoSobregiro;
 
     public CuentaCorriente(Cliente cliente, double cupoSobregiro) {
         super(cliente);
+        this.cupoSobregiro = cupoSobregiro;
+    }
+
+    public CuentaCorriente(Cliente cliente, int numeroCuenta, double saldo, LocalDate fechaApertura,
+            double cupoSobregiro) {
+        super(cliente, numeroCuenta, saldo, fechaApertura);
         this.cupoSobregiro = cupoSobregiro;
     }
 
