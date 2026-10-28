@@ -6,7 +6,7 @@ import com.itm.sistemabancario.utils.ConsoleUtils;
 
 public class MenuView {
     private ClienteService clienteService = new ClienteService();
-    private CuentaService cuentaService = new CuentaService();
+    private CuentaService cuentaService = new CuentaService(clienteService);
 
     private MenuClienteView menuCliente = new MenuClienteView(clienteService);
     private MenuCuentaView menuCuenta = new MenuCuentaView(clienteService, cuentaService);
