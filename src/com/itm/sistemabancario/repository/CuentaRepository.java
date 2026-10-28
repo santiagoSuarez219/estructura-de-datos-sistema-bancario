@@ -54,11 +54,9 @@ public class CuentaRepository {
             while (linea != null) {
                 String[] campos = linea.split(";", -1);
                 if (campos.length == 6) {
-                    Cliente cliente = buscarCliente(clientes, campos[1]);
-                    Cuenta cuenta = cliente == null ? null : construir(cliente, campos);
-                    if (cuenta != null) {
-                        cliente.getCuentas().insertarFinal(cuenta);
-                    }
+                    Cliente cliente = buscarCliente(clientes, campos[1]); // Identificar el cliente en el sistema
+                    Cuenta cuenta = construir(cliente, campos);
+                    cliente.getCuentas().insertarFinal(cuenta);
                 }
                 linea = lector.readLine();
             }
