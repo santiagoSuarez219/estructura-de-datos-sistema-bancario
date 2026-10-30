@@ -1,35 +1,39 @@
 package com.itm.sistemabancario.services;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import com.itm.sistemabancario.models.Cliente;
-import com.itm.sistemabancario.repository.ClienteRepository;
-import com.itm.sistemabancario.repository.CuentaRepository;
+import com.itm.sistemabancario.models.Cuenta;
+import com.itm.sistemabancario.models.CuentaAhorros;
+import com.itm.sistemabancario.models.CuentaCorriente;
 import com.itm.sistemabancario.structures.ListaSimple;
 import com.itm.sistemabancario.structures.Nodo;
 
 public class ClienteService {
+    private static final String ARCHIVO_CLIENTES = "data/clientes.txt";
+    private static final String ARCHIVO_CUENTAS = "data/cuentas.txt";
+    private static final String SEPARADOR = ";";
+    private static final String AHORROS = "AHORROS";
+    private static final String CORRIENTE = "CORRIENTE";
+
     private ListaSimple<Cliente> clientes = new ListaSimple<>();
-    private ClienteRepository repositorio = new ClienteRepository();
-    private CuentaRepository cuentaRepositorio = new CuentaRepository();
 
     public ClienteService() {
-        try {
-            clientes = repositorio.cargarTodos();
-            cuentaRepositorio.cargarTodas(clientes); // las cuentas cuelgan de sus clientes
-        } catch (IOException e) {
-            System.out.println("No se pudieron cargar los datos del archivo: " + e.getMessage());
-        }
+        System.out.println(cargarClientes());
+        System.out.println(cargarCuentas());
     }
 
     public Cliente crearCliente(String identificacion, String nombre, String telefono, String direccion) {
         Cliente cliente = new Cliente(identificacion, nombre, telefono, direccion);
         clientes.insertarFinal(cliente);
-        try {
-            repositorio.guardar(cliente);
-        } catch (IOException e) {
-            System.out.println("No se pudo guardar el cliente en el archivo: " + e.getMessage());
-        }
+        persistir();
         return cliente;
     }
 
@@ -103,17 +107,142 @@ public class ClienteService {
 
     public void persistirCuentas() {
         try {
-            cuentaRepositorio.guardarTodas(clientes);
+            escribirCuentas();
         } catch (IOException e) {
             System.out.println("No se pudieron guardar las cuentas en el archivo: " + e.getMessage());
         }
     }
 
+    public String guardarClientes() {
+        try {
+            escribirClientes();
+            return "Se guardaron " + clientes.getTamano() + " clientes en " + ARCHIVO_CLIENTES;
+        } catch (IOException e) {
+            return "No se pudo guardar: " + e.getMessage();
+        }
+    }
+
+    public String cargarClientes() {
+        File archivo = new File(ARCHIVO_CLIENTES);
+        clientes = new ListaSimple<>();
+
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] campos = linea.split(SEPARADOR);
+                if (campos.length != 4) {
+                    continue;
+                }
+                clientes.insertarFinal(new Cliente(campos[0], campos[1], campos[2], campos[3]));
+            }
+        } catch (FileNotFoundException e) {
+            return "No existe " + ARCHIVO_CLIENTES + "; se inicia con la lista de clientes vacía";
+        } catch (IOException e) {
+            return "No se pudo leer: " + e.getMessage();
+        }
+        return "Se cargaron " + clientes.getTamano() + " clientes. "; // las cuentas cuelgan de sus clientes
+    }
+
     private void persistir() {
         try {
-            repositorio.guardarTodos(clientes);
+            escribirClientes();
         } catch (IOException e) {
             System.out.println("No se pudieron guardar los clientes en el archivo: " + e.getMessage());
+        }
+    }
+
+    private void escribirClientes() throws IOException {
+        File carpeta = new File(ARCHIVO_CLIENTES).getParentFile();
+        if (carpeta != null && !carpeta.exists()) {
+            carpeta.mkdirs();
+        }
+
+        String texto = "";
+        Nodo<Cliente> actual = clientes.getHead();
+        while (actual != null) {
+            Cliente cliente = actual.getDato();
+            texto += String.join(SEPARADOR,
+                    cliente.getIdentificacion(),
+                    cliente.getNombre(),
+                    cliente.getTelefono(),
+                    cliente.getDireccion()) + "\n";
+            actual = actual.getSiguiente();
+        }
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ARCHIVO_CLIENTES))) {
+            escritor.write(texto);
+        }
+    }
+
+    private String cargarCuentas() {
+        File archivo = new File(ARCHIVO_CUENTAS);
+
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] campos = linea.split(SEPARADOR);
+                if (campos.length != 6) {
+                    continue;
+                }
+                Cliente cliente = buscarPorIdentificacion(campos[1]);
+                if (cliente == null) {
+                    continue; // la cuenta es de un cliente que ya no existe
+                }
+                int numero = Integer.parseInt(campos[2]);
+                double saldo = Double.parseDouble(campos[3]);
+                LocalDate fecha = LocalDate.parse(campos[4]);
+                double extra = Double.parseDouble(campos[5]);
+                if (AHORROS.equals(campos[0])) {
+                    cliente.getCuentas().insertarFinal(new CuentaAhorros(cliente, numero, saldo, fecha, extra));
+                } else if (CORRIENTE.equals(campos[0])) {
+                    cliente.getCuentas().insertarFinal(new CuentaCorriente(cliente, numero, saldo, fecha, extra));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            return "No existe " + ARCHIVO_CUENTAS + "; se inicia sin cuentas";
+        } catch (IOException e) {
+            return "No se pudo leer: " + e.getMessage();
+        }
+        return "Se cargaron las cuentas de los clientes";
+    }
+
+    // Una línea por cuenta: tipo;identificacionCliente;numero;saldo;fecha;tasaOCupo
+    private void escribirCuentas() throws IOException {
+        File carpeta = new File(ARCHIVO_CUENTAS).getParentFile();
+        if (carpeta != null && !carpeta.exists()) {
+            carpeta.mkdirs();
+        }
+
+        String texto = "";
+        Nodo<Cliente> clienteActual = clientes.getHead();
+        while (clienteActual != null) {
+            Cliente cliente = clienteActual.getDato();
+            Nodo<Cuenta> cuentaActual = cliente.getCuentas().getHead();
+            while (cuentaActual != null) {
+                Cuenta cuenta = cuentaActual.getDato();
+                String tipo;
+                double extra;
+                if (cuenta instanceof CuentaAhorros) {
+                    tipo = AHORROS;
+                    extra = ((CuentaAhorros) cuenta).getTasaInteres();
+                } else {
+                    tipo = CORRIENTE;
+                    extra = ((CuentaCorriente) cuenta).getCupoSobregiro();
+                }
+                texto += String.join(SEPARADOR,
+                        tipo,
+                        cliente.getIdentificacion(),
+                        String.valueOf(cuenta.getNumeroCuenta()),
+                        String.valueOf(cuenta.getSaldo()),
+                        String.valueOf(cuenta.getFechaApertura()),
+                        String.valueOf(extra)) + "\n";
+                cuentaActual = cuentaActual.getSiguiente();
+            }
+            clienteActual = clienteActual.getSiguiente();
+        }
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ARCHIVO_CUENTAS))) {
+            escritor.write(texto);
         }
     }
 
