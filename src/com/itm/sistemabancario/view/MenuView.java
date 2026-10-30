@@ -2,15 +2,18 @@ package com.itm.sistemabancario.view;
 
 import com.itm.sistemabancario.services.ClienteService;
 import com.itm.sistemabancario.services.CuentaService;
+import com.itm.sistemabancario.services.ProductoService;
 import com.itm.sistemabancario.utils.ConsoleUtils;
 
 public class MenuView {
     private ClienteService clienteService = new ClienteService();
-    private CuentaService cuentaService = new CuentaService();
+    private CuentaService cuentaService = new CuentaService(clienteService);
+    private ProductoService productoService = new ProductoService();
 
     private MenuClienteView menuCliente = new MenuClienteView(clienteService);
     private MenuCuentaView menuCuenta = new MenuCuentaView(clienteService, cuentaService);
     private MenuTaquillaView menuTaquilla = new MenuTaquillaView(clienteService);
+    private MenuCatalogoView menuCatalogo = new MenuCatalogoView(productoService);
 
     public void iniciar() {
         int opcion;
@@ -21,6 +24,7 @@ public class MenuView {
                 case 1 -> menuCliente.iniciar();
                 case 2 -> menuCuenta.iniciar();
                 case 3 -> menuTaquilla.iniciar();
+                case 4 -> menuCatalogo.iniciar();
                 case 0 -> System.out.println("Saliendo del sistema...");
                 default -> System.out.println("Opcion invalida.");
             }
@@ -33,6 +37,7 @@ public class MenuView {
         System.out.println("1. Gestionar clientes");
         System.out.println("2. Gestionar cuentas");
         System.out.println("3. Gestionar taquilla (fila de clientes)");
+        System.out.println("4. Catalogo de productos");
         System.out.println("0. Salir");
     }
 }

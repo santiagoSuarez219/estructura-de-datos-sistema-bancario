@@ -9,15 +9,23 @@ import com.itm.sistemabancario.structures.Nodo;
 import com.itm.sistemabancario.structures.Pila;
 
 public class CuentaService {
+    private ClienteService clienteService;
+
+    public CuentaService(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
+
     public CuentaAhorros crearCuentaAhorros(Cliente cliente) {
         CuentaAhorros nuevaCuenta = new CuentaAhorros(cliente);
         cliente.getCuentas().crear(0, nuevaCuenta);
+        clienteService.persistirCuentas();
         return nuevaCuenta;
     }
 
     public CuentaCorriente crearCuentaCorriente(Cliente cliente, double cupoSobregiro) {
         CuentaCorriente nuevaCuenta = new CuentaCorriente(cliente, cupoSobregiro);
         cliente.getCuentas().crear(0, nuevaCuenta);
+        clienteService.persistirCuentas();
         return nuevaCuenta;
     }
 
@@ -36,7 +44,11 @@ public class CuentaService {
         if (cuenta == null) {
             return false;
         }
-        return cliente.getCuentas().eliminar(cuenta);
+        boolean eliminada = cliente.getCuentas().eliminar(cuenta);
+        if (eliminada) {
+            clienteService.persistirCuentas();
+        }
+        return eliminada;
     }
 
     public String listarCuentas(Cliente cliente) {
@@ -71,6 +83,7 @@ public class CuentaService {
         }
         Movimiento movimiento = new Movimiento(tipo, monto);
         cuenta.getMovimientos().push(movimiento);
+        clienteService.persistirCuentas(); // el saldo cambio
     }
 
     public Movimiento deshacerUltimaOperacion(Cliente cliente, int numeroCuenta) {
@@ -81,6 +94,7 @@ public class CuentaService {
         } else if ("Retiro".equalsIgnoreCase(ultimoMovimiento.getTipo())) {
             cuenta.depositar(ultimoMovimiento.getMonto());
         }
+        clienteService.persistirCuentas(); // el saldo cambio
         return ultimoMovimiento;
     }
 

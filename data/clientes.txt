@@ -1,0 +1,3 @@
+1001;Ana Garcia;3001112233;Calle 10 #5-20
+1002;Luis Perez;3104445566;Carrera 7 #12-34
+1003;Marta Rios;3207778899;Avenida 30 #45-67
