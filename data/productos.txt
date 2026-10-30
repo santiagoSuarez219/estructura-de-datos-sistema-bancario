@@ -1,0 +1,5 @@
+P001;Cuenta de ahorros;AHORROS;2.5
+P002;CDT 90 dias;CDT;9.0
+P003;Tarjeta de credito;TARJETA;24.0
+P004;Credito de libre inversion;CREDITO;18.0
+P005;Cuenta corriente;CORRIENTE;0.0
